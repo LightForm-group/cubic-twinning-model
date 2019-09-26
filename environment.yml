@@ -1,7 +1,4 @@
 name: twinning-environment
-channels:
-  - conda
 dependencies:
-  - python
   - numpy
   - matplotlib
