@@ -1,4 +1,4 @@
-The calculations shown here were used to model the twinning reoroientation in the manuscript entitled:
+The calculations shown here were used to model the twinning re-orientation in the manuscript entitled:
 
 **" On the Observation of Annealing Twins during Simulating β-grain Refinement in Ti-6Al-4V High Deposition Rate AM with In-Process Deformation "**
 
