@@ -4,6 +4,13 @@ from quat import Quat
 from sys import exit
 
 def ori_matrix(phi1,Phi,phi2,passive=True):
+
+    '''
+    Returns (passive) orientation matrix, as a np.matrix from
+    3 euler angles (in degrees). 
+
+    '''
+    
     phi1=np.radians(phi1)
     Phi=np.radians(Phi)
     phi2=np.radians(phi2)
@@ -22,11 +29,14 @@ def ori_matrix(phi1,Phi,phi2,passive=True):
     return matrix
 
 def get_proj(g,pole,proj='stereo'):
+    ''' 
+    Returns polar projection vector from an orientation matrix (g),
+    a pole vector (pole) using either stereographic or equal area projection,
+    '''
     n=np.linalg.norm(pole)
     pole=np.matrix(pole).T/n
     vector=g.T*pole #invert matrix
     alpha=np.arccos(vector[2])
-    # print(vector[2])
     if np.isclose(alpha,0.0):
         beta=np.matrix([0.0])
     else:
@@ -44,6 +54,11 @@ def get_proj(g,pole,proj='stereo'):
     return Op, beta,vector
 
 def plot_poles(beta_list, Op_list):
+    '''
+    Plots a pole figure from a list of angles (beta_list) in radians, 
+    and a list of radii (Op_list). 
+    '''
+
     fig = plt.figure(1)
     ax = fig.add_subplot(111, projection='polar')
     for beta, Op in zip(beta_list, Op_list):
@@ -53,13 +68,17 @@ def plot_poles(beta_list, Op_list):
     ax.set_ylim([0,1.0])
 
 def get_vectors(g,pole_list, proj='stereo'):
+    '''
+    Returns a list of vectors and correponding polar angle and radius
+    for an orientation matrix (g), using a chosen projection (proj).
+    '''  
+
     Op_list=[]
     beta_list=[]
     vector_list=[]
     
     for pole in pole_list:
         Op,beta,vector=get_proj(g,pole,proj)
-   #     if vector[-1]>0:
         Op_list.append(Op)
         beta_list.append(beta)
         vector_list.append(vector)
@@ -67,6 +86,11 @@ def get_vectors(g,pole_list, proj='stereo'):
     return Op_list, beta_list, vector_list
 
 def get_pole_list(pole='001'):
+    ''' 
+    Returns all symmetric variants of the '001', '110' or '111' poles.
+
+    '''
+
     pole_dict = {
         '001': [np.array([1,0,0]), np.array([0,1,0]),np.array([0,0,1]),
                np.array([-1,0,0]), np.array([0,-1,0]),np.array([0,0,-1])],
@@ -92,6 +116,10 @@ def euler_to_quat(phi1,Phi,phi2):
 # Plotting
 
 def plot_pole(g, pole='001', legend=False):
+    ''' Plots a pole figure from an orientation matrix (g)
+        for s chosen pole (pole). Pole can be the '001', '110' or '111'.
+    '''
+    
     pole_list=get_pole_list(pole)
     Op_list, beta_list, vector_list=get_vectors(g,pole_list)
     plot_poles(beta_list, Op_list)
@@ -100,6 +128,10 @@ def plot_pole(g, pole='001', legend=False):
     #return beta_list, Op_list
     
 def plot_all_poles(g, proj= 'stereo', fig = None, label='ro'):
+    ''' Plots 3 pole figures from an orientation matrix (g)
+        for s chosen pole (pole), correponding to the '001', '110' 
+        and '111' poles.
+    '''
     poles=['001','110','111']
     if fig == None:
         fig = plt.figure(figsize=(10,30))
@@ -115,6 +147,10 @@ def plot_all_poles(g, proj= 'stereo', fig = None, label='ro'):
             ax.plot(beta, Op,label,ms=14, alpha=0.5)
 
 def plot_all_poles_multi(g_list, proj= 'stereo', fig = None ,label='go' ):
+    ''' Plots 3 pole figures from a list of orientation matrices (g_list)
+        for s chosen pole (pole), correponding to the '001', '110' 
+        and '111' poles.
+    '''
     poles=['001','110','111']
     if fig == None:
         fig = plt.figure(figsize=(10,30))
